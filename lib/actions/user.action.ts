@@ -43,3 +43,13 @@ export const UpdateUser = async ({
     throw new Error(`Failed to create/update user: ${error}`);
   }
 };
+
+export const getUser = async (userId: string) => {
+  try {
+    connectToDB();
+    const user = await User.findOne({ id: userId });
+    return user;
+  } catch (error: any) {
+    throw new Error(`Failed to fetch user: ${error.message}`);
+  }
+};
