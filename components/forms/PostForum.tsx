@@ -14,28 +14,12 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-import Image from "next/image";
-import { ChangeEvent, useState } from "react";
 import { Textarea } from "../ui/textarea";
 
-import { useUploadThing } from "@/lib/uploadthing";
-import { UpdateUser } from "@/lib/actions/user.action";
 import { usePathname, useRouter } from "next/navigation";
+import { createForum } from "@/lib/actions/forum.action";
 
-interface AccountprofileProps {
-  user: {
-    id: string;
-    objectId: string;
-    username: string;
-    name: string;
-    bio: string;
-    image: string;
-  };
-  btnTitle: string;
-}
 export const PostForum = ({ userId }: { userId: string }) => {
-  const [files, setFiles] = useState<File[]>([]);
-  const { startUpload } = useUploadThing("media");
   const router = useRouter();
   const pathname = usePathname();
 
@@ -47,7 +31,16 @@ export const PostForum = ({ userId }: { userId: string }) => {
     },
   });
 
-  const onSubmit = () => {};
+  const onSubmit = async (values: z.infer<typeof ForumValidation>) => {
+    await createForum({
+      text: values.forum,
+      author: userId,
+      communityId: null,
+      path: pathname,
+    });
+
+    router.push("/");
+  };
 
   return (
     <Form {...form}>
@@ -65,7 +58,7 @@ export const PostForum = ({ userId }: { userId: string }) => {
               </FormLabel>
               <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
                 <Textarea
-                  rows={50}
+                  rows={15}
                   className="account-form_input no-focus"
                   {...field}
                 />
