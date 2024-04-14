@@ -68,3 +68,28 @@ export async function fetchForums(pageNumber = 1, pageSize = 20) {
 
   return { posts, isNext };
 }
+
+export async function fetchForumById(id: string) {
+  connectToDB();
+  try {
+    const forum = await Forum.findById(id)
+      .populate({
+        path: "author",
+        model: User,
+        select: "_id id name image",
+      })
+      .populate({
+        path: "children",
+        model: Forum,
+        populate: {
+          path: "author",
+          model: User,
+          select: "_id id parentId image",
+        },
+      })
+      .exec();
+    return forum;
+  } catch (error: any) {
+    return new Error("Error while fetching forum" + error);
+  }
+}
