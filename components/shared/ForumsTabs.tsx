@@ -14,7 +14,7 @@ export const ForumsTabs = async ({
   accountType,
 }: ForumsTabsProps) => {
   const post = await fetchUsersPosts(accountId);
-  console.log(post);
+
   if (!post) redirect("/");
   return (
     <div className="mt-9 flex flex-col gap-10">
